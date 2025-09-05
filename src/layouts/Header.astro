@@ -1,0 +1,92 @@
+---
+import Wordmark from "../assets/logotext.svg";
+import { Icon } from "astro-icon/components";
+const currentPath = Astro.url.pathname;
+
+const links = [
+  { name: "Home", href: "/", icon: false },
+  // { name: "About", href: "/about", icon: false },
+  { name: "Events", href: "/#events", icon: false },
+];
+
+const socials = [
+  {
+    icon: "simple-icons:instagram",
+    href: "https://www.instagram.com/pjandtheflamingos/",
+  },
+  {
+    icon: "simple-icons:facebook",
+    href: "https://www.facebook.com/people/PJ-and-the-Flamingos/61580199991884/",
+  },
+  {
+    icon: "simple-icons:youtube",
+    href: "https://www.youtube.com/channel/UCo42kDCYcLSZORFOWwm5uEw",
+  },
+];
+---
+
+<div
+  class="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-sm text-white"
+>
+  <header class="max-w-5xl mx-auto sm:px-16 px-3 py-2 flex items-center gap-2">
+    <a href="/" class="hover:text-flamingo transition">
+      <Wordmark height={48} width={190} />
+    </a>
+    <div class="flex-grow"></div>
+    <nav>
+      <ul class="flex items-center gap-6 flex-wrap">
+        {
+          links.map((link) => {
+            const isActive = currentPath === link.href;
+            return (
+              <li>
+                <a
+                  href={link.href}
+                  class={`${
+                    isActive ? "text-flamingo font-semibold" : ""
+                  } hover:text-flamingo transition-colors duration-200`}
+                >
+                  {link.name}
+                </a>
+              </li>
+            );
+          })
+        }
+        <div class="flex gap-4">
+          {
+            socials.map((social) => (
+              <li>
+                <a
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-accent hover:text-flamingo transition-colors duration-200"
+                >
+                  <Icon name={social.icon} width="24" height="24" />
+                </a>
+              </li>
+            ))
+          }
+        </div>
+      </ul>
+    </nav>
+  </header>
+</div>
+
+<script>
+  function scrollHeader() {
+    const header = document.querySelector("header");
+    if (header) {
+      if (window.scrollY > 0) {
+        header.classList.add("scrolled");
+      } else {
+        header.classList.remove("scrolled");
+      }
+    }
+  }
+  document.addEventListener("scroll", scrollHeader);
+
+  document.addEventListener("astro:page-load", () => {
+    scrollHeader();
+  });
+</script>

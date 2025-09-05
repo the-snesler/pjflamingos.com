@@ -1,0 +1,41 @@
+---
+import { Icon } from "astro-icon/components";
+import Wordmark from "../assets/logotext.svg";
+
+const socials = [
+  {
+    icon: "simple-icons:instagram",
+    href: "https://www.instagram.com/pjandtheflamingos/",
+  },
+  {
+    icon: "simple-icons:facebook",
+    href: "https://www.facebook.com/people/PJ-and-the-Flamingos/61580199991884/",
+  },
+  {
+    icon: "simple-icons:youtube",
+    href: "https://www.youtube.com/channel/UCo42kDCYcLSZORFOWwm5uEw",
+  },
+];
+---
+
+<footer
+  class="w-full h-52 py-6 bg-gradient-to-b from-black to-flamingo/30 backdrop-blur-sm text-white flex flex-col gap-12 items-center justify-center"
+>
+  <ul class="flex gap-4">
+    {
+      socials.map((social) => (
+        <li class="inline-block mx-4">
+          <a
+            href={social.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-white hover:text-flamingo transition-colors duration-200"
+          >
+            <Icon name={social.icon} width="32" height="32" />
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  <Wordmark class="w-3/4 max-w-lg mb-4" />
+</footer>

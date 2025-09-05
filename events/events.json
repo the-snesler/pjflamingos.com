@@ -1,0 +1,13 @@
+[
+  {
+    "id": 0,
+    "date": "2025-09-20T20:00:00",
+    "endDate": "2025-09-20T21:30:00",
+    "title": "Jazz Night at The Rivoli Arts District",
+    "location": "Rivoli Arts District\n123 4th St N, La Crosse, WI, 54601, USA",
+    "locationHref": "https://goo.gl/maps/xyz123",
+    "description": "Join us in the newly opened Rivoli Arts District for PJ and the Flamingos debut performance!\nDoors Open: 8:00pm\nShowtime: 8:30pm-9:30pm",
+    "ticketsHref": "https://app.hi.events/event/2322/jazz-night-at-the-rivoli-arts-district",
+    "imageSrc": "https://ik.imagekit.io/hievents/tr:w-1400,q-100/event_cover/rivoli-sign-background-8DQgW.png"
+  }
+]
