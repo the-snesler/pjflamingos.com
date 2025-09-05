@@ -10,6 +10,7 @@ const entries =
   await contentfulClient.withoutUnresolvableLinks.getEntries<ContentfulEvent>({
     "content_type": "event",
     "fields.endDate[gt]": new Date().toISOString() as any,
+    "order": "fields.startDate" as any,
   });
 ---
 
