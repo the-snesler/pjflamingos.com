@@ -62,7 +62,11 @@ const endDate = event.fields.endDate ? new Date(event.fields.endDate) : null;
       <Icon name="lucide:arrow-up-right" class="inline align-baseline" />
     </a>
   </p>
-  {event.fields.description && <p class="mt-2">{event.fields.description}</p>}
+  {
+    event.fields.description && (
+      <p class="mt-2 whitespace-pre-wrap" set:html={event.fields.description} />
+    )
+  }
   {
     event.fields.ticketsLink && (
       <a
