@@ -1,15 +1,16 @@
 ---
 import { Image } from "astro:assets";
 import background from "../assets/background.png";
-import { getCollection, getEntry } from "astro:content";
 import logo from "../assets/logocolor.png";
-import { Icon } from "astro-icon/components";
-const allEvents = await getCollection("events");
-const upcomingEvents = allEvents
-  .filter((event) => {
-    return event.data.date >= new Date();
-  })
-  .sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
+
+import { contentfulClient, type ContentfulEvent } from "../lib/contentful";
+import EventCard from "./EventCard.astro";
+
+const entries =
+  await contentfulClient.withoutUnresolvableLinks.getEntries<ContentfulEvent>({
+    "content_type": "event",
+    "fields.endDate[gt]": new Date().toISOString() as any,
+  });
 ---
 
 <div class="pb-16">
@@ -39,57 +40,9 @@ const upcomingEvents = allEvents
       </h1>
       <div class="flex flex-col gap-8 mb-12">
         {
-          upcomingEvents.length > 0 ? (
-            upcomingEvents.map((event) => (
-              <div class="block max-w-3xl mx-auto p-6 bg-black/50 backdrop-blur-sm border border-flamingo rounded-lg text-white">
-                <h2 class="text-3xl font-semibold mb-2">{event.data.title}</h2>
-                <p class="mb-1">
-                  <Icon name="lucide:calendar" class="inline align-baseline" />
-                  <i>
-                    {event.data.date.toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                      hour: "numeric",
-                      minute: "numeric",
-                      hour12: true,
-                    })}
-                    {event.data.endDate
-                      ? ` - ${event.data.endDate.toLocaleTimeString("en-US", {
-                          hour: "numeric",
-                          minute: "numeric",
-                          hour12: true,
-                        })}`
-                      : ""}
-                  </i>
-                </p>
-                <p class="mb-1">
-                  <Icon name="lucide:map-pin" class="inline align-baseline" />
-                  <a
-                    href={event.data.locationHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="italic underline text-accent hover:text-flamingo"
-                  >
-                    {event.data.location}
-                    <Icon
-                      name="lucide:arrow-up-right"
-                      class="inline align-baseline"
-                    />
-                  </a>
-                </p>
-                {event.data.description && (
-                  <p class="mt-2">{event.data.description}</p>
-                )}
-                <a
-                  href={event.data.ticketsHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="inline-block mt-4 px-4 py-2 bg-flamingo text-black font-semibold rounded hover:bg-flamingo/80 transition-colors duration-200"
-                >
-                  Get Tickets
-                </a>
-              </div>
+          entries.items.length > 0 ? (
+            entries.items.map((event, i) => (
+              <EventCard event={event} showPhoto={i === 0} />
             ))
           ) : (
             <div class="max-w-3xl mx-auto text-center text-white">

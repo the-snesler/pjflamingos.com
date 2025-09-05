@@ -1,0 +1,78 @@
+---
+import { Icon } from "astro-icon/components";
+import { type ContentfulEvent } from "../lib/contentful";
+import type { Entry } from "contentful";
+
+export interface Props {
+  event: Entry<ContentfulEvent, "WITHOUT_UNRESOLVABLE_LINKS", string>;
+  showPhoto?: boolean;
+}
+
+const { event, showPhoto = true } = Astro.props as Props;
+const startDate = new Date(event.fields.startDate);
+const endDate = event.fields.endDate ? new Date(event.fields.endDate) : null;
+---
+
+<div
+  class="block max-w-3xl mx-auto p-6 bg-black/50 backdrop-blur-sm border border-flamingo rounded-lg text-white"
+>
+  {
+    showPhoto && event.fields.coverPhoto && (
+      <img
+        src={event.fields.coverPhoto.fields.file?.url}
+        alt={event.fields.coverPhoto.fields.title || "Event Cover Photo"}
+        class="mb-4 rounded w-full h-42 object-cover"
+      />
+    )
+  }
+  <h2 class="text-3xl font-semibold mb-2">{event.fields.title}</h2>
+  <p class="mb-1">
+    <Icon name="lucide:calendar" class="inline align-baseline" />
+    <i>
+      {
+        startDate.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "numeric",
+          minute: "numeric",
+          hour12: true,
+        })
+      }
+      {
+        endDate
+          ? ` - ${endDate.toLocaleTimeString("en-US", {
+              hour: "numeric",
+              minute: "numeric",
+              hour12: true,
+            })}`
+          : ""
+      }
+    </i>
+  </p>
+  <p class="mb-1">
+    <Icon name="lucide:map-pin" class="inline align-baseline" />
+    <a
+      href={event.fields.locationLink}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="italic underline text-accent hover:text-flamingo"
+    >
+      {event.fields.address}
+      <Icon name="lucide:arrow-up-right" class="inline align-baseline" />
+    </a>
+  </p>
+  {event.fields.description && <p class="mt-2">{event.fields.description}</p>}
+  {
+    event.fields.ticketsLink && (
+      <a
+        href={event.fields.ticketsLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-block mt-4 px-4 py-2 bg-flamingo text-black font-semibold rounded hover:bg-flamingo/80 transition-colors duration-200"
+      >
+        Get Tickets
+      </a>
+    )
+  }
+</div>
