@@ -25,10 +25,8 @@ const socials = [
 ];
 ---
 
-<div
-  class="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-sm text-white"
->
-  <header class="max-w-5xl mx-auto sm:px-16 px-3 py-2 flex items-center gap-2">
+<header class="fixed top-0 left-0 right-0 z-50 text-white">
+  <div class="max-w-5xl mx-auto sm:px-16 px-3 py-2 flex items-center gap-2">
     <a href="/" class="hover:text-flamingo transition">
       <Wordmark height={48} width={190} />
     </a>
@@ -70,8 +68,21 @@ const socials = [
         </div>
       </ul>
     </nav>
-  </header>
-</div>
+  </div>
+</header>
+
+<style>
+  header {
+    transition:
+      background-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+  header.scrolled {
+    background-color: rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+  }
+</style>
 
 <script>
   function scrollHeader() {
