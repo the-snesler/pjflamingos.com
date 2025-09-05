@@ -11,6 +11,7 @@ export interface Props {
 const { event, showPhoto = true } = Astro.props as Props;
 const startDate = new Date(event.fields.startDate);
 const endDate = event.fields.endDate ? new Date(event.fields.endDate) : null;
+const timeZone = "America/Chicago";
 ---
 
 <div
@@ -37,6 +38,7 @@ const endDate = event.fields.endDate ? new Date(event.fields.endDate) : null;
           hour: "numeric",
           minute: "numeric",
           hour12: true,
+          timeZone,
         })
       }
       {
@@ -45,6 +47,7 @@ const endDate = event.fields.endDate ? new Date(event.fields.endDate) : null;
               hour: "numeric",
               minute: "numeric",
               hour12: true,
+              timeZone,
             })}`
           : ""
       }
