@@ -2,6 +2,7 @@
 import { Icon } from "astro-icon/components";
 import { type ContentfulEvent } from "../lib/contentful";
 import type { Entry } from "contentful";
+import { Image } from "astro:assets";
 
 export interface Props {
   event: Entry<ContentfulEvent, "WITHOUT_UNRESOLVABLE_LINKS", string>;
@@ -48,10 +49,13 @@ const finalTimeString = endDate
 >
   {
     showPhoto && event.fields.coverPhoto && (
-      <img
-        src={event.fields.coverPhoto.fields.file?.url}
+      <Image
+        src={event.fields.coverPhoto.fields.file?.url || ""}
         alt={event.fields.coverPhoto.fields.title || "Event Cover Photo"}
         class="mb-4 rounded w-full h-42 object-cover"
+        layout="full-width"
+        width={800}
+        height={168}
       />
     )
   }

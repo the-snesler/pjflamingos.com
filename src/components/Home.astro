@@ -5,6 +5,7 @@ import logo from "../assets/logocolor.png";
 
 import { contentfulClient, type ContentfulEvent } from "../lib/contentful";
 import EventCard from "./EventCard.astro";
+import { Picture } from "astro:assets";
 
 const entries =
   await contentfulClient.withoutUnresolvableLinks.getEntries<ContentfulEvent>({
@@ -31,7 +32,14 @@ const entries =
       <div
         class="absolute inset-0 flex flex-col justify-center items-center text-center text-white px-4"
       >
-        <Image src={logo} alt="Logo" class="w-3/4 max-w-lg mb-4" />
+        <Image
+          src={logo}
+          alt="Logo"
+          layout="fixed"
+          width={512}
+          height={512}
+          class="w-3/4 max-w-lg mb-4"
+        />
         <p>A jazz combo from La Crosse, Wisconsin</p>
       </div>
     </section>
