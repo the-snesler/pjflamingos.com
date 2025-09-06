@@ -12,6 +12,35 @@ const { event, showPhoto = true } = Astro.props as Props;
 const startDate = new Date(event.fields.startDate);
 const endDate = event.fields.endDate ? new Date(event.fields.endDate) : null;
 const timeZone = "America/Chicago";
+const startDateString = startDate.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  timeZone,
+});
+let startTimeString = startDate
+  .toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+    timeZone,
+  })
+  .replace(" ", "")
+  .toLowerCase();
+let endTimeString = endDate
+  ? endDate
+      .toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+        timeZone,
+      })
+      .replace(" ", "")
+      .toLowerCase()
+  : null;
+const finalTimeString = endDate
+  ? `${startDateString} at ${startTimeString}-${endTimeString}`
+  : `${startDateString} at ${startTimeString}`;
 ---
 
 <div
@@ -29,57 +58,38 @@ const timeZone = "America/Chicago";
   <h2 class="text-3xl font-semibold mb-2">{event.fields.title}</h2>
   <p class="mb-1">
     <Icon name="lucide:calendar" class="inline align-baseline" />
-    <i>
-      {
-        startDate.toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "numeric",
-          minute: "numeric",
-          hour12: true,
-          timeZone,
-        })
-      }
-      {
-        endDate
-          ? ` - ${endDate.toLocaleTimeString("en-US", {
-              hour: "numeric",
-              minute: "numeric",
-              hour12: true,
-              timeZone,
-            })}`
-          : ""
-      }
-    </i>
-  </p>
-  <p class="mb-1">
-    <Icon name="lucide:map-pin" class="inline align-baseline" />
-    <a
-      href={event.fields.locationLink}
-      target="_blank"
-      rel="noopener noreferrer"
-      class="italic underline text-accent hover:text-flamingo"
-    >
-      {event.fields.address}
-      <Icon name="lucide:arrow-up-right" class="inline align-baseline" />
-    </a>
-  </p>
-  {
-    event.fields.description && (
-      <p class="mt-2 whitespace-pre-wrap" set:html={event.fields.description} />
-    )
-  }
-  {
-    event.fields.ticketsLink && (
+    <i>{finalTimeString}</i>
+    <p class="mb-1">
+      <Icon name="lucide:map-pin" class="inline align-baseline" />
       <a
-        href={event.fields.ticketsLink}
+        href={event.fields.locationLink}
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-block mt-4 px-4 py-2 bg-flamingo text-black font-semibold rounded hover:bg-flamingo/80 transition-colors duration-200"
+        class="italic underline text-accent hover:text-flamingo"
       >
-        Get Tickets
+        {event.fields.address}
+        <Icon name="lucide:arrow-up-right" class="inline align-baseline" />
       </a>
-    )
-  }
+    </p>
+    {
+      event.fields.description && (
+        <p
+          class="mt-2 whitespace-pre-wrap"
+          set:html={event.fields.description}
+        />
+      )
+    }
+    {
+      event.fields.ticketsLink && (
+        <a
+          href={event.fields.ticketsLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-block mt-4 px-4 py-2 bg-flamingo text-black font-semibold rounded hover:bg-flamingo/80 transition-colors duration-200"
+        >
+          Get Tickets
+        </a>
+      )
+    }
+  </p>
 </div>
