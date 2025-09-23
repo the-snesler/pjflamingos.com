@@ -15,6 +15,15 @@ export interface ContentfulEvent {
   };
 }
 
+export interface ContentfulPhotoSection {
+  contentTypeId: "photoGallery";
+  fields: {
+    title: EntryFieldTypes.Text;
+    photos: EntryFieldTypes.Array<EntryFieldTypes.AssetLink>;
+    date: EntryFieldTypes.Date;
+  }
+}
+
 export const contentfulClient = contentful.createClient({
   space: import.meta.env.CONTENTFUL_SPACE_ID,
   accessToken: import.meta.env.DEV

@@ -1,0 +1,145 @@
+---
+import { Image } from "astro:assets";
+import {
+  contentfulClient,
+  type ContentfulPhotoSection,
+} from "../lib/contentful";
+
+const entries =
+  await contentfulClient.withoutUnresolvableLinks.getEntries<ContentfulPhotoSection>(
+    {
+      content_type: "photoGallery",
+      order: "fields.date" as any,
+    }
+  );
+---
+
+<script>
+  import { registerMasonry } from "masonry-pf";
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const targets = document.getElementsByClassName("grid-rows-[masonry]");
+    for (const target of targets) {
+      registerMasonry(target as HTMLElement);
+    }
+
+    // Shadowbox functionality
+    const shadowbox = document.getElementById("shadowbox");
+    const shadowboxImg = document.getElementById(
+      "shadowbox-img"
+    ) as HTMLImageElement;
+    const shadowboxClose = document.getElementById("shadowbox-close");
+    const shadowboxCaption = document.getElementById("shadowbox-caption");
+    const galleryImages = document.querySelectorAll("[data-fullres]");
+
+    galleryImages.forEach((img) => {
+      img.addEventListener("click", () => {
+        const fullResUrl = img.getAttribute("data-fullres");
+        const caption = img.getAttribute("data-caption") || "";
+
+        if (fullResUrl && shadowboxImg && shadowbox) {
+          shadowboxImg.src = fullResUrl;
+          if (shadowboxCaption) {
+            shadowboxCaption.textContent = caption;
+          }
+          shadowbox.classList.remove("hidden");
+          shadowbox.classList.add("flex");
+          document.body.style.overflow = "hidden";
+        }
+      });
+    });
+
+    const closeShadowbox = () => {
+      if (shadowbox) {
+        shadowbox.classList.add("hidden");
+        shadowbox.classList.remove("flex");
+        document.body.style.overflow = "";
+      }
+    };
+
+    shadowboxClose?.addEventListener("click", closeShadowbox);
+    shadowbox?.addEventListener("click", (e) => {
+      if (e.target === shadowbox) {
+        closeShadowbox();
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (
+        e.key === "Escape" &&
+        shadowbox &&
+        !shadowbox.classList.contains("hidden")
+      ) {
+        closeShadowbox();
+      }
+    });
+  });
+</script>
+
+<div class="py-16">
+  <main>
+    <section id="photos">
+      <h1 class="text-6xl text-flamingo font-serif text-center my-8">
+        Photo Gallery
+      </h1>
+      <div class="flex flex-col gap-12 mb-12 relative">
+        {
+          entries.items.map((section) => (
+            <div class="max-w-5xl mx-auto px-4 py-1 border-2 rounded-lg border-flamingo/50 pb-8">
+              <h2 class="text-4xl text-white font-serif mb-6">
+                {section.fields.title}
+              </h2>
+              <div
+                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 grid-rows-[masonry]"
+                id="horizontal"
+              >
+                {section.fields.photos.map((photo) => {
+                  const width = photo?.fields.file?.details?.image?.width || 1;
+                  const height =
+                    photo?.fields.file?.details?.image?.height || 1;
+                  const aspectRatio = height / width;
+                  const effWidth = Math.min(400, width);
+                  const effHeight = Math.round(effWidth * aspectRatio);
+                  return (
+                    <Image
+                      src={`${photo?.fields.file?.url}?w=${effWidth}&h=${effHeight}&fit=fill`}
+                      alt={photo?.fields.title || "Photo"}
+                      class="w-full h-auto rounded bg-flamingo/10 object-cover cursor-pointer hover:opacity-90 transition-opacity"
+                      width={effWidth}
+                      height={effHeight}
+                      data-fullres={photo?.fields.file?.url}
+                      data-caption={photo?.fields.title || "Photo"}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          ))
+        }
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div
+  id="shadowbox"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-black/95 p-4"
+>
+  <button
+    id="shadowbox-close"
+    class="absolute top-4 right-4 text-white text-4xl font-light hover:text-flamingo transition-colors"
+    aria-label="Close"
+  >
+    &times;
+  </button>
+  <div class="max-w-full max-h-full flex flex-col items-center">
+    <img
+      id="shadowbox-img"
+      src=""
+      alt=""
+      class="max-w-full max-h-[85vh] object-contain bg-flamingo/10 rounded"
+    />
+    <p id="shadowbox-caption" class="text-white text-center mt-4 text-lg"></p>
+  </div>
+</div>
