@@ -38,6 +38,7 @@ const entries =
         const caption = img.getAttribute("data-caption") || "";
 
         if (fullResUrl && shadowboxImg && shadowbox) {
+          shadowboxImg.src = "";
           shadowboxImg.src = fullResUrl;
           if (shadowboxCaption) {
             shadowboxCaption.textContent = caption;
