@@ -4,6 +4,7 @@ import {
   contentfulClient,
   type ContentfulPhotoSection,
 } from "../lib/contentful";
+import background from "../assets/DSCALLEY.png";
 
 const entries =
   await contentfulClient.withoutUnresolvableLinks.getEntries<ContentfulPhotoSection>(
@@ -80,13 +81,28 @@ const entries =
 <div class="py-16">
   <main>
     <section id="photos">
-      <h1 class="text-6xl text-flamingo font-serif text-center my-8">
+      <div class="absolute inset-0 overflow-hidden w-full">
+        <Image
+          id="hero-image"
+          src={background}
+          alt=""
+          fetchpriority="high"
+          width="960"
+        />
+        <div
+          class="absolute inset-0 bg-gradient-to-b from-transparent via-flamingo/20 to-black -z-10"
+        >
+        </div>
+      </div>
+      <h1
+        class="text-6xl text-white font-serif text-center my-48 text-shadow-md"
+      >
         Photo Gallery
       </h1>
       <div class="flex flex-col gap-12 mb-12 relative">
         {
           entries.items.map((section) => (
-            <div class="max-w-5xl mx-auto px-4 py-1 border-2 rounded-lg border-flamingo/50 pb-8">
+            <div class="max-w-5xl mx-auto px-4 py-1 border-2 rounded-lg border-flamingo/50 pb-8 bg-black/50 backdrop-blur-sm">
               <h2 class="text-4xl text-white font-serif mb-6">
                 {section.fields.title}
               </h2>
@@ -117,7 +133,6 @@ const entries =
             </div>
           ))
         }
-        </div>
       </div>
     </section>
   </main>
@@ -144,3 +159,16 @@ const entries =
     <p id="shadowbox-caption" class="text-white text-center mt-4 text-lg"></p>
   </div>
 </div>
+
+<style>
+  #hero-image {
+    position: absolute;
+    width: 100%;
+    height: min(100vh, 910px);
+    top: 0;
+    transform: scale(1.05);
+    filter: brightness(0.75);
+    object-fit: cover;
+    z-index: -10;
+  }
+</style>

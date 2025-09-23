@@ -1,11 +1,10 @@
 ---
 import { Image } from "astro:assets";
-import background from "../assets/background.png";
+import background from "../assets/DSC09523.png";
 import logo from "../assets/logocolor.png";
 
 import { contentfulClient, type ContentfulEvent } from "../lib/contentful";
 import EventCard from "./EventCard.astro";
-import { Picture } from "astro:assets";
 
 const entries =
   await contentfulClient.withoutUnresolvableLinks.getEntries<ContentfulEvent>({
@@ -68,22 +67,22 @@ const entries =
       </div>
     </section>
   </main>
-
-  <style>
-    #hero {
-      position: relative;
-      height: min(100vh, 910px);
-      width: 100%;
-      overflow: hidden;
-    }
-    #hero-image {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      transform: scale(1.05);
-      filter: brightness(0.75);
-      object-fit: cover;
-    }
-  </style>
 </div>
+
+<style>
+  #hero {
+    position: relative;
+    height: min(100vh, 910px);
+    width: 100%;
+    overflow: hidden;
+  }
+  #hero-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    transform: scale(1.05);
+    filter: brightness(0.75);
+    object-fit: cover;
+  }
+</style>
