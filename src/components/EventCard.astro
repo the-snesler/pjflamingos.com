@@ -53,7 +53,7 @@ const finalTimeString = endDate
       <Image
         src={event.fields.coverPhoto.fields.file?.url || ""}
         alt={event.fields.coverPhoto.fields.title || "Event Cover Photo"}
-        class="mb-4 rounded w-full h-42 object-cover"
+        class="mb-4 rounded w-full max-h-[50vh] object-cover"
         layout="full-width"
         width={800}
         height={168}
