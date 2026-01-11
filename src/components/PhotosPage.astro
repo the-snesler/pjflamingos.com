@@ -1,5 +1,6 @@
 ---
 import { Image } from "astro:assets";
+import { Masonry } from 'astro-masonry';
 import {
   contentfulClient,
   type ContentfulPhotoSection,
@@ -16,21 +17,13 @@ const entries =
 ---
 
 <script>
-  import { registerMasonry } from "masonry-pf";
-
   document.addEventListener("DOMContentLoaded", () => {
-    const targets = document.getElementsByClassName("grid-rows-[masonry]");
-    for (const target of targets) {
-      registerMasonry(target as HTMLElement);
-    }
-
-    // Shadowbox functionality
-    const shadowbox = document.getElementById("shadowbox");
-    const shadowboxImg = document.getElementById(
-      "shadowbox-img"
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById(
+      "lightbox-img"
     ) as HTMLImageElement;
-    const shadowboxClose = document.getElementById("shadowbox-close");
-    const shadowboxCaption = document.getElementById("shadowbox-caption");
+    const lightboxClose = document.getElementById("lightbox-close");
+    const lightboxCaption = document.getElementById("lightbox-caption");
     const galleryImages = document.querySelectorAll("[data-fullres]");
 
     galleryImages.forEach((img) => {
@@ -38,41 +31,41 @@ const entries =
         const fullResUrl = img.getAttribute("data-fullres");
         const caption = img.getAttribute("data-caption") || "";
 
-        if (fullResUrl && shadowboxImg && shadowbox) {
-          shadowboxImg.src = "";
-          shadowboxImg.src = fullResUrl;
-          if (shadowboxCaption) {
-            shadowboxCaption.textContent = caption;
+        if (fullResUrl && lightboxImg && lightbox) {
+          lightboxImg.src = "";
+          lightboxImg.src = fullResUrl;
+          if (lightboxCaption) {
+            lightboxCaption.textContent = caption;
           }
-          shadowbox.classList.remove("hidden");
-          shadowbox.classList.add("flex");
+          lightbox.classList.remove("hidden");
+          lightbox.classList.add("flex");
           document.body.style.overflow = "hidden";
         }
       });
     });
 
-    const closeShadowbox = () => {
-      if (shadowbox) {
-        shadowbox.classList.add("hidden");
-        shadowbox.classList.remove("flex");
+    const closelightbox = () => {
+      if (lightbox) {
+        lightbox.classList.add("hidden");
+        lightbox.classList.remove("flex");
         document.body.style.overflow = "";
       }
     };
 
-    shadowboxClose?.addEventListener("click", closeShadowbox);
-    shadowbox?.addEventListener("click", (e) => {
-      if (e.target === shadowbox) {
-        closeShadowbox();
+    lightboxClose?.addEventListener("click", closelightbox);
+    lightbox?.addEventListener("click", (e) => {
+      if (e.target === lightbox) {
+        closelightbox();
       }
     });
 
     document.addEventListener("keydown", (e) => {
       if (
         e.key === "Escape" &&
-        shadowbox &&
-        !shadowbox.classList.contains("hidden")
+        lightbox &&
+        !lightbox.classList.contains("hidden")
       ) {
-        closeShadowbox();
+        closelightbox();
       }
     });
   });
@@ -106,22 +99,30 @@ const entries =
               <h2 class="text-4xl text-white font-serif mb-6">
                 {section.fields.title}
               </h2>
-              <div
-                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 grid-rows-[masonry]"
-                id="horizontal"
+              <Masonry
+                breakpointCols={{
+                  default: 3,
+                  768: 2,
+                  640: 1,
+                }}
+                sortByHeight={true}
+                class="gap-4"
+                columnClass="flex flex-col gap-4"
               >
                 {section.fields.photos.map((photo) => {
                   const width = photo?.fields.file?.details?.image?.width || 1;
-                  const height =
-                    photo?.fields.file?.details?.image?.height || 1;
-                  const aspectRatio = height / width;
-                  const effWidth = Math.min(400, width);
-                  const effHeight = Math.round(effWidth * aspectRatio);
+                  const height = photo?.fields.file?.details?.image?.height || 1;
+                  const aspectRatio = width / height;
+                  const effWidth = Math.min(width, 400);
+                  const effHeight = Math.round(effWidth / aspectRatio);
+                  // have to add https: to src so Astro will process it
                   return (
                     <Image
-                      src={`${photo?.fields.file?.url}?w=${effWidth}&h=${effHeight}&fit=fill`}
+                      src={`https:${photo?.fields.file?.url}`}
+                      format={'jpg'}
+                      quality={80}
                       alt={photo?.fields.title || "Photo"}
-                      class="w-full h-auto rounded bg-flamingo/10 object-cover cursor-pointer hover:opacity-90 transition-opacity"
+                      class="rounded bg-flamingo/10 object-cover cursor-pointer hover:opacity-90 transition-opacity"
                       width={effWidth}
                       height={effHeight}
                       data-fullres={photo?.fields.file?.url}
@@ -129,7 +130,7 @@ const entries =
                     />
                   );
                 })}
-              </div>
+              </Masonry>
             </div>
           ))
         }
@@ -139,11 +140,11 @@ const entries =
 </div>
 
 <div
-  id="shadowbox"
+  id="lightbox"
   class="fixed inset-0 z-50 hidden items-center justify-center bg-black/95 p-4"
 >
   <button
-    id="shadowbox-close"
+    id="lightbox-close"
     class="absolute top-4 right-4 text-white text-4xl font-light hover:text-flamingo transition-colors"
     aria-label="Close"
   >
@@ -151,12 +152,12 @@ const entries =
   </button>
   <div class="max-w-full max-h-full flex flex-col items-center">
     <img
-      id="shadowbox-img"
+      id="lightbox-img"
       src=""
       alt=""
       class="max-w-full max-h-[85vh] object-contain bg-flamingo/10 rounded"
     />
-    <p id="shadowbox-caption" class="text-white text-center mt-4 text-lg"></p>
+    <p id="lightbox-caption" class="text-white text-center mt-4 text-lg"></p>
   </div>
 </div>
 
