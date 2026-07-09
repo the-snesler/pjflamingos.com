@@ -46,7 +46,7 @@ const finalTimeString = endDate
 ---
 
 <div
-  class="block max-w-3xl mx-auto p-6 bg-black/50 backdrop-blur-sm border border-flamingo rounded-lg text-white"
+  class="block max-w-3xl w-full mx-auto p-6 bg-black/50 backdrop-blur-sm border border-flamingo rounded-lg text-white relative fancy-background"
 >
   {
     showPhoto && event.fields.coverPhoto && (
@@ -98,3 +98,26 @@ const finalTimeString = endDate
     }
   </p>
 </div>
+
+<style>
+  .fancy-background::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    --dots-size: 1.5px;
+    --dots-spacing: 10px;
+    background:
+      radial-gradient(var(--color-flamingo) var(--dots-size), transparent 0),
+      radial-gradient(var(--color-flamingo) var(--dots-size), transparent 0);
+    background-size: var(--dots-spacing) var(--dots-spacing);
+    background-position:
+      0 0,
+      calc(var(--dots-spacing) / 2) calc(var(--dots-spacing) / 2);
+    background-repeat: repeat;
+    mask-image: linear-gradient(
+      to top left,
+      rgba(0, 0, 0, 0.5) 0%,
+      rgba(0, 0, 0, 0) 50%
+    );
+  }
+</style>
